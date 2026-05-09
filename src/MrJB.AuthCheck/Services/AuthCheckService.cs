@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Duende.IdentityModel.Client;
+using Microsoft.Extensions.Options;
 using MrJB.AuthCheck.Domain.Configuration;
 using MrJB.AuthCheck.Domain.Interfaces;
-using MrJB.AuthCheck.Domain.Models;
 
 namespace MrJB.AuthCheck.Services;
 
@@ -30,41 +30,37 @@ public class AuthCheckService : IAuthCheckService
     {
         _logger.LogInformation("Requesting OAuth token from {TokenEndpoint}", _options.TokenEndpoint);
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, _options.TokenEndpoint)
+        var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
-            Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            Address = "https://identity.yourdomain.com",
+            Policy =
             {
-                ["grant_type"] = "client_credentials",
-                ["client_id"] = _options.ClientId,
-                ["client_secret"] = _options.ClientSecret,
-                ["scope"] = _options.Scope
-            })
-        };
+                RequireHttps = true
+            }
+        }, cancellationToken);
 
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
+        if (disco.IsError)
         {
-            var errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            _logger.LogError(
-                "OAuth token request failed. StatusCode: {StatusCode}. Body: {Body}",
-                response.StatusCode,
-                errorBody);
-
-            throw new InvalidOperationException($"OAuth token request failed with status code {response.StatusCode}.");
+            _logger.LogError("Discovery failed: {Error}", disco.Error);
+            throw new InvalidOperationException($"Discovery failed: {disco.Error}");
         }
 
-        var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken: cancellationToken);
+        var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(
+            new ClientCredentialsTokenRequest
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = "authcheck",
+                ClientSecret = "your-secret",
+                Scope = "api.read"
+            },
+            cancellationToken);
 
-        if (tokenResponse is null || string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
+        if (tokenResponse.IsError)
         {
-            _logger.LogError("OAuth token response did not contain an access token.");
-            throw new InvalidOperationException("OAuth token response did not contain an access token.");
+            _logger.LogError("Token request failed: {Error}", tokenResponse.Error);
+            throw new InvalidOperationException($"Token request failed: {tokenResponse.Error}");
         }
 
-        _logger.LogInformation("OAuth token received successfully. ExpiresIn: {ExpiresIn} seconds", tokenResponse.ExpiresIn);
-
-        return tokenResponse.AccessToken;
+        return tokenResponse.AccessToken!;
     }
 }
