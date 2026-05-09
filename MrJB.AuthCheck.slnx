@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/MrJB.AuthCheck.AppHost/MrJB.AuthCheck.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/MrJB.AuthCheck.Domain/MrJB.AuthCheck.Domain.csproj" Id="f86401b8-4d33-4d77-9a41-17029be8754e" />
+    <Project Path="src/MrJB.AuthCheck.ServiceDefaults/MrJB.AuthCheck.ServiceDefaults.csproj" />
+    <Project Path="src/MrJB.AuthCheck/MrJB.AuthCheck.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+  <Folder Name="/_Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+</Solution>
