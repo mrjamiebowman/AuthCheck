@@ -12,13 +12,13 @@ public sealed class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("MyWorker started.");
+        _logger.LogInformation("OAuth Worker started.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                _logger.LogInformation("MyWorker running at {Time}", DateTimeOffset.Now);
+                _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
 
                 // TODO: your background work here
 
@@ -30,11 +30,11 @@ public sealed class Worker : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in MyWorker.");
+                _logger.LogError(ex, "Error in Worker.");
                 await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
         }
 
-        _logger.LogInformation("MyWorker stopped.");
+        _logger.LogInformation("Worker stopped.");
     }
 }
