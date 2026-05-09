@@ -9,7 +9,11 @@
   </Folder>
   <Folder Name="/test/" />
   <Folder Name="/_Solution Items/">
+    <File Path=".dockerignore" />
     <File Path=".gitignore" />
+    <File Path="build.ps1" />
+    <File Path="helm-install.ps1" />
+    <File Path="helm-uninstall.ps1" />
     <File Path="README.md" />
   </Folder>
 </Solution>
