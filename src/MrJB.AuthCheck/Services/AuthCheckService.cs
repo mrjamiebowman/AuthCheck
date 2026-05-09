@@ -7,17 +7,22 @@ namespace MrJB.AuthCheck.Services;
 
 public class AuthCheckService : IAuthCheckService
 {
-    private readonly HttpClient _httpClient;
+    // logger
     private readonly ILogger<AuthCheckService> _logger;
+
+    // http client
+    private readonly HttpClient _httpClient;
+
+    // configuration
     private readonly OAuthCheckConfiguration _options;
 
     public AuthCheckService(
-        HttpClient httpClient,
         ILogger<AuthCheckService> logger,
+        HttpClient httpClient,
         IOptions<OAuthCheckConfiguration> options)
     {
-        _httpClient = httpClient;
         _logger = logger;
+        _httpClient = httpClient;
         _options = options.Value;
     }
 
