@@ -1,4 +1,7 @@
 using MrJB.AuthCheck;
+using MrJB.AuthCheck.Domain.Configuration;
+using MrJB.AuthCheck.Domain.Interfaces;
+using MrJB.AuthCheck.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,10 @@ builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.Configure<OAuthCheckConfiguration>(builder.Configuration.GetSection(OAuthCheckConfiguration.Position));
+
+builder.Services.AddHttpClient<IAuthCheckService, AuthCheckService>();
 
 // worker
 builder.Services.AddHostedService<Worker>();

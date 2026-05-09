@@ -2,5 +2,5 @@
 
 public interface IAuthCheckService
 {
-
+    Task<string> GetAccessTokenAsync(CancellationToken cancellationToken = default);
 }
