@@ -11,5 +11,8 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "authcheck.fullname" . }}:{{ .Values.service.port }}']
+      args:
+        - '--spider'
+        - '--server-response'
+        - 'http://{{ include "authcheck.fullname" . }}:{{ .Values.service.port }}/api/up'
   restartPolicy: Never
