@@ -20,19 +20,24 @@ public static class OTel
     {
         public static Meter AppMeter = new Meter("mrjb.authcheck", "1.0.0");
 
-        private static Counter<int> Token = AppMeter.CreateCounter<int>(Auth.Names.Token, description: "Tracks when a user is having issues logging in, resetting passwords, etc.");
+        private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(Auth.Names.Token, description: "Tracks when a discovery document is checked.");
+
+        private static Counter<int> Token = AppMeter.CreateCounter<int>(Auth.Names.Token, description: "Tracks when a JWT token is requested.");
 
         public static class Auth
         {
             public static class Names
             {
-                private static string _path = $"authcheck";
+                private static string _path = $"authcheck";                
+
+                public static string DiscoveryDocument = $"{_path}.discoverydocument.check";
 
                 public static string Token = $"{_path}.token";
             }
 
-            public static void AddToken(int d = 1) => Token.Add(d);
             public static void AddToken(int d = 1, TagList tagList = default) => Token.Add(d, tagList);
+
+            public static void AddDiscoveryDocument(int d = 1, TagList tagList = default) => DiscoveryDocument.Add(d, tagList);
         }
     }
 }

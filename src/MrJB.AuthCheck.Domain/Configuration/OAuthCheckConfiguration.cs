@@ -6,7 +6,7 @@ public class OAuthCheckConfiguration
 
     public string? Name { get; set; } = string.Empty;
 
-    public string? TokenEndpoint { get; set; } = string.Empty;
+    public string? Server { get; set; } = string.Empty;
 
     public string? ClientId { get; set; } = string.Empty;
 
