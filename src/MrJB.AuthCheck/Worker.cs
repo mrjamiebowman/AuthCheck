@@ -1,18 +1,30 @@
-﻿namespace MrJB.AuthCheck;
+﻿using Microsoft.Extensions.Options;
+using MrJB.AuthCheck.Domain.Configuration;
+using MrJB.AuthCheck.Domain.Interfaces;
+
+namespace MrJB.AuthCheck;
 
 public sealed class Worker : BackgroundService
 {
     // logger
     private readonly ILogger<Worker> _logger;
 
-    public Worker(ILogger<Worker> logger)
+    // services
+    private readonly IAuthCheckService _authCheckService;
+
+    // config
+    private AuthCheckConfiguration _authCheck { get; set; }
+
+    public Worker(ILogger<Worker> logger, IAuthCheckService authCheckService, IOptions<AuthCheckConfiguration> authCheck)
     {
         _logger = logger;
+        _authCheckService = authCheckService;
+        _authCheck = authCheck.Value;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("OAuth Worker started.");
+        _logger.LogInformation("AuthCheck Worker started.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -20,9 +32,22 @@ public sealed class Worker : BackgroundService
             {
                 _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
 
-                // TODO: your background work here
+                // oauth checks
+                foreach (var item in _authCheck.OAuthChecks)
+                {
+                    try
+                    {
+                        // get token
+                        var token = await _authCheckService.GetAccessTokenAsync(item, stoppingToken);
+                    } catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                // delay
+                _logger.LogInformation("Delay {delayInMinutes} mins.", _authCheck.DelayInMinutes);
+                await Task.Delay(TimeSpan.FromMinutes(_authCheck.DelayInMinutes), stoppingToken);
             }
             catch (OperationCanceledException)
             {
@@ -31,10 +56,9 @@ public sealed class Worker : BackgroundService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in Worker.");
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
         }
 
-        _logger.LogInformation("Worker stopped.");
+        _logger.LogInformation("AuthCheck Worker stopped.");
     }
 }

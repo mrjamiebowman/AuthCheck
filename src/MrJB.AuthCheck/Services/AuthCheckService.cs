@@ -1,5 +1,4 @@
 ﻿using Duende.IdentityModel.Client;
-using Microsoft.Extensions.Options;
 using MrJB.AuthCheck.Domain.Configuration;
 using MrJB.AuthCheck.Domain.Interfaces;
 
@@ -13,26 +12,22 @@ public class AuthCheckService : IAuthCheckService
     // http client
     private readonly HttpClient _httpClient;
 
-    // configuration
-    private readonly OAuthCheckConfiguration _options;
-
     public AuthCheckService(
         ILogger<AuthCheckService> logger,
-        HttpClient httpClient,
-        IOptions<OAuthCheckConfiguration> options)
+        HttpClient httpClient
+        )
     {
         _logger = logger;
         _httpClient = httpClient;
-        _options = options.Value;
     }
 
-    public async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    public async Task<string> GetAccessTokenAsync(OAuthCheckConfiguration oauthCheck, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Requesting OAuth token from {TokenEndpoint}", _options.TokenEndpoint);
+        _logger.LogInformation("Requesting OAuth token from {TokenEndpoint}", oauthCheck.TokenEndpoint);
 
         var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
-            Address = "https://identity.yourdomain.com",
+            Address = oauthCheck.TokenEndpoint,
             Policy =
             {
                 RequireHttps = true
@@ -49,9 +44,9 @@ public class AuthCheckService : IAuthCheckService
             new ClientCredentialsTokenRequest
             {
                 Address = disco.TokenEndpoint,
-                ClientId = "authcheck",
-                ClientSecret = "your-secret",
-                Scope = "api.read"
+                ClientId = oauthCheck.ClientId,
+                ClientSecret = oauthCheck.ClientSecret,
+                Scope = oauthCheck.Scope
             },
             cancellationToken);
 
