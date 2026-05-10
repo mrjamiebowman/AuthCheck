@@ -14,5 +14,5 @@ spec:
       args:
         - '--spider'
         - '--server-response'
-        - 'http://{{ include "authcheck.fullname" . }}:{{ .Values.service.port }}/api/up'
+        - 'http://{{ include "authcheck.fullname" . }}:{{ .Values.service.port }}/up'
   restartPolicy: Never
