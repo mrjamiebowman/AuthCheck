@@ -25,6 +25,8 @@ public class AuthCheckService : IAuthCheckService
 
     public async Task<string> GetAccessTokenAsync(OAuthCheckConfiguration oauthCheck, CancellationToken cancellationToken = default)
     {
+        using var activity = OTel.ActivitySource.StartActivity($"{nameof(AuthCheckService)}.{nameof(GetAccessTokenAsync)}");
+
         _logger.LogInformation("Requesting OAuth token from (Server: {TokenEndpoint}) for (Client ID: {clientId})", oauthCheck.Server, oauthCheck.ClientId);
 
         // tag list(s)
