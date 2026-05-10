@@ -47,10 +47,6 @@ public sealed class Worker : BackgroundService
                         throw;
                     }
                 }
-
-                // delay
-                _logger.LogInformation("Delay {delayInMinutes} mins.", delay);
-                await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
             }
             catch (OperationCanceledException)
             {
@@ -60,6 +56,10 @@ public sealed class Worker : BackgroundService
             {
                 _logger.LogError(ex, "Error in Worker.");
             }
+
+            // delay
+            _logger.LogInformation("Delay {delayInMinutes} mins.", delay);
+            await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
         }
 
         _logger.LogInformation("AuthCheck Worker stopped.");
