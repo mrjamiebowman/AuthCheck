@@ -23,14 +23,20 @@ Log.Logger = new LoggerConfiguration()
             "{Exception}")
     .CreateLogger();
 
+// environment
+var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+
 // configuration
 builder.Configuration
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile("appsettings.mrjamiebowman.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables()
     .Build();
+
+// startup logs
+Log.Logger.Information("Starting Auth Check, Environment: {environment}", environment);
 
 // app
 builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
