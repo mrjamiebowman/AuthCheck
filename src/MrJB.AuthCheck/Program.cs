@@ -23,6 +23,19 @@ Log.Logger = new LoggerConfiguration()
             "{Exception}")
     .CreateLogger();
 
+// configuration
+builder.Configuration
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.mrjamiebowman.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+// app
+builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
+builder.Services.Configure<OAuthCheckConfiguration>(builder.Configuration.GetSection(OAuthCheckConfiguration.Position));
+
 builder.Host.UseSerilog();
 
 builder.AddServiceDefaults();
@@ -32,7 +45,6 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.Configure<OAuthCheckConfiguration>(builder.Configuration.GetSection(OAuthCheckConfiguration.Position));
 
 builder.Services.AddHttpClient<IAuthCheckService, AuthCheckService>();
 

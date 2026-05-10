@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MrJB.AuthCheck.ServiceDefaults;
 
 namespace MrJB.AuthCheck.Controllers;
 
@@ -14,8 +15,16 @@ public class UpController : ControllerBase
         _logger = logger;
     }
 
-    public Task Up()
+    [HttpGet]
+    public IActionResult Index()
     {
-        return Task.FromResult("OK");
+        using var activity = OTel.ActivitySource.StartActivity($"{nameof(UpController)}.{nameof(Index)}");
+
+        _logger.LogInformation("{ClassName}.{MethodName}, UP",
+            nameof(UpController),
+            nameof(Index)
+        );
+
+        return Ok("UP");
     }
 }
