@@ -30,7 +30,7 @@ public static class OTel
             {
                 private static string _path = $"authcheck";                
 
-                public static string DiscoveryDocument = $"{_path}.discoverydocument.check";
+                public static string DiscoveryDocument = $"{_path}.discoverydocument";
 
                 public static string Token = $"{_path}.token";
             }
