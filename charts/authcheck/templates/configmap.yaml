@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "authcheck.labels" . | nindent 4 }}
 data:
-  appsettings.json: |
+  appsettings.Production.json: |
     {
       "AuthCheck": {
         "OAuth": {{ .Values.authCheck.oAuth | default true }},
