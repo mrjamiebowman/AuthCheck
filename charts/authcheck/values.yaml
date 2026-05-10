@@ -125,17 +125,17 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80    
 
-# # volumes
-# volumes:
-#   - name: authcheck-config
-#     configMap:
-#       name: {{ include "authcheck.fullname" . }}-config
+# volumes
+volumes:
+  - name: authcheck-config
+    configMap:
+      name: authcheck-config
 
-# # volume mounts
-# volumeMounts:
-#   - name: authcheck-config
-#     mountPath: /app/appsettings.Production.json
-#     subPath: appsettings.Production.json
+# volume mounts
+volumeMounts:
+  - name: authcheck-config
+    mountPath: /app/appsettings.Production.json
+    subPath: appsettings.Production.json
 
 nodeSelector: {}
 tolerations: []
