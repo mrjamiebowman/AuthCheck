@@ -20,7 +20,7 @@ public static class OTel
     {
         public static Meter AppMeter = new Meter("mrjb.authcheck", "1.0.0");
 
-        private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(Auth.Names.Token, description: "Tracks when a discovery document is checked.");
+        private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(Auth.Names.DiscoveryDocument, description: "Tracks when a discovery document is checked.");
 
         private static Counter<int> Token = AppMeter.CreateCounter<int>(Auth.Names.Token, description: "Tracks when a JWT token is requested.");
 

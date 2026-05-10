@@ -34,8 +34,8 @@ public class AuthCheckService : IAuthCheckService
         tagListDiscoDoc.Add(Spans.ClientId, oauthCheck.ClientId);
         tagListToken.Add(Spans.ClientId, oauthCheck.ClientId);
 
-        tagListDiscoDoc.Add(Spans.ServerUrl, oauthCheck.ClientId);
-        tagListToken.Add(Spans.ServerUrl, oauthCheck.ClientId);
+        tagListDiscoDoc.Add(Spans.Server, oauthCheck.Server);
+        tagListToken.Add(Spans.Server, oauthCheck.Server);
 
         var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest {
             Address = oauthCheck.Server,

@@ -6,7 +6,7 @@ public static class Spans
 
     public static string ClientId = "client.id";
 
-    public static string ServerUrl = "token.server";
+    public static string Server = "server";
 
     public static class Values
     {
