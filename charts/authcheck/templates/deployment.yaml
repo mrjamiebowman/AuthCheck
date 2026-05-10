@@ -23,6 +23,11 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      env:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - name: DOTNET_ENVIRONMENT
+        value: Production
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
