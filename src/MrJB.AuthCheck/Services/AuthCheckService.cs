@@ -31,12 +31,11 @@ public class AuthCheckService : IAuthCheckService
 
         // tag list(s)
         var tagListDiscoDoc = new TagList();
-        var tagListToken = new TagList();
-
         tagListDiscoDoc.Add(Spans.ClientId, oauthCheck.ClientId);
-        tagListToken.Add(Spans.ClientId, oauthCheck.ClientId);
-
         tagListDiscoDoc.Add(Spans.Server, oauthCheck.Server);
+
+        var tagListToken = new TagList();        
+        tagListToken.Add(Spans.ClientId, oauthCheck.ClientId);        
         tagListToken.Add(Spans.Server, oauthCheck.Server);
 
         var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest {

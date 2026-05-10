@@ -49,70 +49,107 @@ public static class Extensions
 
     public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // service name
         string serviceName = builder.Configuration["OTEL_SERVICE_NAME"] ?? OTel.ActivitySource.Name;
-
-        var resourceBuilder = ResourceBuilder.CreateDefault().AddService(serviceName);
         var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+        bool useAzureMonitor = !string.IsNullOrWhiteSpace(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
+        var resourceBuilder = ResourceBuilder
+            .CreateDefault()
+            .AddService(serviceName: serviceName);
+
+        ConfigureLogging(builder, resourceBuilder, useOtlpExporter);
+
+        var openTelemetryBuilder = builder.Services
+            .AddOpenTelemetry()
+            .ConfigureResource(resource =>
+            {
+                resource.AddService(serviceName: serviceName);
+            });
+
+        ConfigureMetrics(openTelemetryBuilder, useOtlpExporter);
+        ConfigureTracing(openTelemetryBuilder, serviceName, useOtlpExporter);
+
+        if (useAzureMonitor)
+        {
+            openTelemetryBuilder.UseAzureMonitor();
+        }
+
+        return builder;
+    }
+
+    private static void ConfigureLogging<TBuilder>(
+        TBuilder builder,
+        ResourceBuilder resourceBuilder,
+        bool useOtlpExporter)
+        where TBuilder : IHostApplicationBuilder
+    {
         builder.Logging.AddOpenTelemetry(logging =>
         {
             logging.IncludeFormattedMessage = true;
             logging.IncludeScopes = true;
             logging.ParseStateValues = true;
 
-            logging.SetResourceBuilder(resourceBuilder);
+            //logging.SetResourceBuilder(resourceBuilder);
 
-            if (useOtlpExporter) {
+            if (useOtlpExporter)
+            {
                 logging.AddOtlpExporter();
             }
         });
+    }
 
-        builder.Services.AddOpenTelemetry()
-            .WithMetrics(metrics =>
-            {
-                metrics
-                    .SetResourceBuilder(resourceBuilder)
-                    .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddMeter(OTel.Meters.AppMeter.Name)
-                    .AddRuntimeInstrumentation();
-
-                if (useOtlpExporter) {
-                    metrics.AddOtlpExporter();
-                }
-            })
-            .WithTracing(tracing =>
-            {
-                tracing
-                    .SetResourceBuilder(resourceBuilder)
-                    .AddSource(serviceName)                    
-                    .AddAspNetCoreInstrumentation(tracing =>
-                        // exclude health check requests from tracing
-                        tracing.Filter = context =>
-                            !context.Request.Path.StartsWithSegments(HealthEndpointPath)
-                            && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath)
-                    )
-                    // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
-                    //.AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
-
-                if (!String.IsNullOrWhiteSpace(serviceName) && serviceName.ToLower() != OTel.ActivitySource.Name.ToLower()) {
-                    tracing.AddSource(OTel.ActivitySource.Name);
-                }
-
-                if (useOtlpExporter) {
-                    tracing.AddOtlpExporter();
-                }
-            });
-
-        // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
-        if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+    private static void ConfigureMetrics(
+        OpenTelemetryBuilder openTelemetryBuilder,
+        bool useOtlpExporter)
+    {
+        openTelemetryBuilder.WithMetrics(metrics =>
         {
-            builder.Services.AddOpenTelemetry().UseAzureMonitor();
-        }
+            metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddMeter(OTel.Meters.AppMeter.Name);
 
-        return builder;
+            if (useOtlpExporter)
+            {
+                metrics.AddOtlpExporter();
+            }
+        });
+    }
+
+    private static void ConfigureTracing(
+        OpenTelemetryBuilder openTelemetryBuilder,
+        string serviceName,
+        bool useOtlpExporter)
+    {
+        openTelemetryBuilder.WithTracing(tracing =>
+        {
+            tracing
+                .AddAspNetCoreInstrumentation(options =>
+                {
+                    options.Filter = context =>
+                        !context.Request.Path.StartsWithSegments(HealthEndpointPath)
+                        && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath);
+                })
+                .AddHttpClientInstrumentation()
+                .AddSource(OTel.ActivitySource.Name);
+
+            if (!string.Equals(
+                    serviceName,
+                    OTel.ActivitySource.Name,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                tracing.AddSource(serviceName);
+            }
+
+            if (useOtlpExporter)
+            {
+                tracing.AddOtlpExporter();
+            }
+        });
     }
 
 
