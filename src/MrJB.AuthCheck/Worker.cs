@@ -24,7 +24,10 @@ public sealed class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("AuthCheck Worker started.");
+        // delay
+        var delay = _authCheck.DelayInMinutes ?? 20;
+
+        _logger.LogInformation("AuthCheck Worker started with a delay of {delay}.", delay);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -46,8 +49,8 @@ public sealed class Worker : BackgroundService
                 }
 
                 // delay
-                _logger.LogInformation("Delay {delayInMinutes} mins.", _authCheck.DelayInMinutes);
-                await Task.Delay(TimeSpan.FromMinutes(_authCheck.DelayInMinutes), stoppingToken);
+                _logger.LogInformation("Delay {delayInMinutes} mins.", delay);
+                await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
             }
             catch (OperationCanceledException)
             {

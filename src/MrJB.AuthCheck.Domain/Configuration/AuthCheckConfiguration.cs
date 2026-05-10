@@ -7,7 +7,7 @@ public class AuthCheckConfiguration
     /// <summary>
     ///  Delay in minutes to check auth.
     /// </summary>
-    public int DelayInMinutes { get; set; } = 20;
+    public int? DelayInMinutes { get; set; }
 
     /// <summary>
     ///  OAuth Checks Enabled
