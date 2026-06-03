@@ -27,7 +27,7 @@ public class AuthCheckService : IAuthCheckService
     {
         using var activity = OTel.ActivitySource.StartActivity($"{nameof(AuthCheckService)}.{nameof(GetAccessTokenAsync)}");
 
-        _logger.LogInformation("Requesting OAuth token from (Server: {TokenEndpoint}), for (Client ID: {clientId})", oauthCheck.Server, oauthCheck.ClientId);
+        _logger.LogInformation("Auth Check: (Name: {name}), (Server: {server}), for (Client ID: {clientId})", oauthCheck.Name, oauthCheck.Server, oauthCheck.ClientId);
 
         // tag list(s)
         var tagListDiscoDoc = new TagList();
@@ -54,6 +54,7 @@ public class AuthCheckService : IAuthCheckService
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Failure);
             OTel.Meters.Auth.AddDiscoveryDocument(1, tagListDiscoDoc);
 
+            activity?.SetStatus(ActivityStatusCode.Error, $"Discovery failed: {disco.Error}");
             throw new InvalidOperationException($"Discovery failed: {disco.Error}");
         } else
         {
@@ -79,6 +80,7 @@ public class AuthCheckService : IAuthCheckService
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Failure);
             OTel.Meters.Auth.AddToken(1, tagListDiscoDoc);
 
+            activity?.SetStatus(ActivityStatusCode.Error, $"Token request failed: {tokenResponse.Error}");
             throw new InvalidOperationException($"Token request failed: {tokenResponse.Error}");
         } else
         {
@@ -86,6 +88,9 @@ public class AuthCheckService : IAuthCheckService
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Success);
             OTel.Meters.Auth.AddToken(1, tagListDiscoDoc);
         }
+
+        // passed
+        activity?.SetStatus(ActivityStatusCode.Ok);
 
         return tokenResponse.AccessToken!;
     }

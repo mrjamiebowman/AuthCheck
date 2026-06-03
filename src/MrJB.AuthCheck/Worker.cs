@@ -27,7 +27,7 @@ public sealed class Worker : BackgroundService
         // delay
         var delay = _authCheck.DelayInMinutes ?? 20;
 
-        _logger.LogInformation("AuthCheck Worker started with a delay of {delay} in minutes.", delay);
+        _logger.LogInformation("AuthCheck Worker started with a delay of {delayInMinutes} in minutes.", delay);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -44,7 +44,7 @@ public sealed class Worker : BackgroundService
                         var token = await _authCheckService.GetAccessTokenAsync(item, stoppingToken);
                     } catch (Exception ex)
                     {
-                        throw;
+                        // suppress
                     }
                 }
             }
