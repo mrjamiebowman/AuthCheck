@@ -1,8 +1,8 @@
 ﻿namespace MrJB.AuthCheck.Domain.Configuration;
 
-public class OAuthCheckConfiguration
+public class CheckConfiguration
 {
-    public const string Position = "OAuthCheck";
+    public const string Position = "Checks";
 
     public string? Name { get; set; } = string.Empty;
 
@@ -12,5 +12,5 @@ public class OAuthCheckConfiguration
 
     public string? ClientSecret { get; set; } = string.Empty;
 
-    public string? Scope { get; set; } = string.Empty;
+    public string? Scopes { get; set; } = string.Empty;
 }

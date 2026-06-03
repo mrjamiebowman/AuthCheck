@@ -17,17 +17,17 @@ public class AuthCheckService : IAuthCheckService
     public AuthCheckService(
         ILogger<AuthCheckService> logger,
         HttpClient httpClient
-        )
+    )
     {
         _logger = logger;
         _httpClient = httpClient;
     }
 
-    public async Task<string> GetAccessTokenAsync(OAuthCheckConfiguration oauthCheck, CancellationToken cancellationToken = default)
+    public async Task<string> GetAccessTokenAsync(CheckConfiguration oauthCheck, CancellationToken cancellationToken = default)
     {
         using var activity = OTel.ActivitySource.StartActivity($"{nameof(AuthCheckService)}.{nameof(GetAccessTokenAsync)}");
 
-        _logger.LogInformation("Requesting OAuth token from (Server: {TokenEndpoint}) for (Client ID: {clientId})", oauthCheck.Server, oauthCheck.ClientId);
+        _logger.LogInformation("Requesting OAuth token from (Server: {TokenEndpoint}), for (Client ID: {clientId})", oauthCheck.Server, oauthCheck.ClientId);
 
         // tag list(s)
         var tagListDiscoDoc = new TagList();
@@ -38,6 +38,7 @@ public class AuthCheckService : IAuthCheckService
         tagListToken.Add(Spans.ClientId, oauthCheck.ClientId);        
         tagListToken.Add(Spans.Server, oauthCheck.Server);
 
+        // discovery document
         var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest {
             Address = oauthCheck.Server,
             Policy = {
@@ -47,6 +48,7 @@ public class AuthCheckService : IAuthCheckService
 
         if (disco.IsError)
         {
+            // failed
             _logger.LogError("Discovery failed: {Error}", disco.Error);
 
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Failure);
@@ -55,20 +57,23 @@ public class AuthCheckService : IAuthCheckService
             throw new InvalidOperationException($"Discovery failed: {disco.Error}");
         } else
         {
+            // succeeded
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Success);
             OTel.Meters.Auth.AddDiscoveryDocument(1, tagListDiscoDoc);
         }
 
+        // token request
         var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(
             new ClientCredentialsTokenRequest {
                 Address = disco.TokenEndpoint,
                 ClientId = oauthCheck.ClientId,
                 ClientSecret = oauthCheck.ClientSecret,
-                Scope = oauthCheck.Scope
+                Scope = oauthCheck.Scopes
             }, cancellationToken);
 
         if (tokenResponse.IsError)
         {
+            // failure
             _logger.LogError("Token request failed: {Error}", tokenResponse.Error);
 
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Failure);
@@ -77,6 +82,7 @@ public class AuthCheckService : IAuthCheckService
             throw new InvalidOperationException($"Token request failed: {tokenResponse.Error}");
         } else
         {
+            // success
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Success);
             OTel.Meters.Auth.AddToken(1, tagListDiscoDoc);
         }

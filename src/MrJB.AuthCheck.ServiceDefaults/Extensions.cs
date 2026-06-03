@@ -51,10 +51,10 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // service name
-        string serviceName = builder.Configuration["OTEL_SERVICE_NAME"] ?? OTel.ActivitySource.Name;
+        // vars
         var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
         bool useAzureMonitor = !string.IsNullOrWhiteSpace(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+        string serviceName = OTel.ActivitySource.Name;
 
         var resourceBuilder = ResourceBuilder
             .CreateDefault()

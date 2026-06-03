@@ -12,8 +12,7 @@ public class AuthCheckConfiguration
     /// <summary>
     ///  OAuth Checks Enabled
     /// </summary>
-    public bool OAuth { get; set; }
+    public bool OAuth { get; set; } = true;
 
-
-    public List<OAuthCheckConfiguration> OAuthChecks { get; set; } = new();
+    public List<CheckConfiguration> Checks { get; set; } = new();
 }

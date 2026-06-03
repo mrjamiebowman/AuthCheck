@@ -5,7 +5,7 @@ namespace MrJB.AuthCheck.ServiceDefaults;
 
 public static class OTel
 {
-    public static string ApplicationName { get; set; } = "mrjb.authcheck";
+    public static string ApplicationName { get; set; } = "MrJB.AuthCheck";
 
     public static string ServiceVersion { get; set; } = "1.0.0";
 

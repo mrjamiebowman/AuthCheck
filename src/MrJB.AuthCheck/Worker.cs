@@ -27,7 +27,7 @@ public sealed class Worker : BackgroundService
         // delay
         var delay = _authCheck.DelayInMinutes ?? 20;
 
-        _logger.LogInformation("AuthCheck Worker started with a delay of {delay}.", delay);
+        _logger.LogInformation("AuthCheck Worker started with a delay of {delay} in minutes.", delay);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -36,7 +36,7 @@ public sealed class Worker : BackgroundService
                 _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
 
                 // oauth checks
-                foreach (var item in _authCheck.OAuthChecks)
+                foreach (var item in _authCheck.Checks)
                 {
                     try
                     {
@@ -59,6 +59,7 @@ public sealed class Worker : BackgroundService
 
             // delay
             _logger.LogInformation("Delay {delayInMinutes} mins.", delay);
+
             await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
         }
 
