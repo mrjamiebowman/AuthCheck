@@ -16,19 +16,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/MrJB.AuthCheck/MrJB.AuthCheck.csproj", "src/MrJB.AuthCheck/"]
-RUN dotnet restore "./src/MrJB.AuthCheck/MrJB.AuthCheck.csproj"
+COPY ["src/CoreMS.AuthCheck/CoreMS.AuthCheck.csproj", "src/CoreMS.AuthCheck/"]
+RUN dotnet restore "./src/CoreMS.AuthCheck/CoreMS.AuthCheck.csproj"
 COPY . .
-WORKDIR "/src/src/MrJB.AuthCheck"
-RUN dotnet build "./MrJB.AuthCheck.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/src/CoreMS.AuthCheck"
+RUN dotnet build "./CoreMS.AuthCheck.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # publish
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MrJB.AuthCheck.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./CoreMS.AuthCheck.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # final
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MrJB.AuthCheck.dll"]
+ENTRYPOINT ["dotnet", "CoreMS.AuthCheck.dll"]
