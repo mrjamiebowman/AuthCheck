@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>c03b0587-8331-4c44-9ad0-1b29ab3afe5e</UserSecretsId>
+    <UserSecretsId>corems-authcheck-c03b0587-8331-4c44-9ad0-1b29ab3afe5e</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
