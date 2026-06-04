@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MrJB.AuthCheck.Domain.Interfaces;
+namespace CoreMS.AuthCheck.Domain.Interfaces;
 
 public class IAuthCheckOAuthService
 {

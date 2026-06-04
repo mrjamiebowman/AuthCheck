@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace MrJB.AuthCheck.ServiceDefaults;
+namespace CoreMS.AuthCheck.ServiceDefaults;
 
 public static class OTel
 {

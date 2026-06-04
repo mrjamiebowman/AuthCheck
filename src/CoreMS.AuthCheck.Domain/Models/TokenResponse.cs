@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MrJB.AuthCheck.Domain.Models;
+namespace CoreMS.AuthCheck.Domain.Models;
 
 public class TokenResponse
 {

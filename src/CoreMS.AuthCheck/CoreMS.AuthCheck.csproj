@@ -22,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MrJB.AuthCheck.Domain\MrJB.AuthCheck.Domain.csproj" />
-    <ProjectReference Include="..\MrJB.AuthCheck.ServiceDefaults\MrJB.AuthCheck.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\CoreMS.AuthCheck.ServiceDefaults\CoreMS.AuthCheck.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

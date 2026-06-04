@@ -1,7 +1,8 @@
-using MrJB.AuthCheck;
-using MrJB.AuthCheck.Domain.Configuration;
-using MrJB.AuthCheck.Domain.Interfaces;
-using MrJB.AuthCheck.Services;
+using CoreMS.AuthCheck;
+using CoreMS.AuthCheck.Domain.Configuration;
+using CoreMS.AuthCheck.Domain.Interfaces;
+using CoreMS.AuthCheck.ServiceDefaults;
+using CoreMS.AuthCheck.Services;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;

@@ -1,6 +1,6 @@
-﻿using MrJB.AuthCheck.Domain.Configuration;
+﻿using CoreMS.AuthCheck.Domain.Configuration;
 
-namespace MrJB.AuthCheck.Domain.Interfaces;
+namespace CoreMS.AuthCheck.Domain.Interfaces;
 
 public interface IAuthCheckService
 {

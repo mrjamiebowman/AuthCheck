@@ -1,4 +1,4 @@
-﻿namespace MrJB.AuthCheck;
+﻿namespace CoreMS.AuthCheck;
 
 public static class Builder
 {

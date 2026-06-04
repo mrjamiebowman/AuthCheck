@@ -1,4 +1,4 @@
-﻿namespace MrJB.AuthCheck.Domain.Configuration;
+﻿namespace CoreMS.AuthCheck.Domain.Configuration;
 
 public class CheckConfiguration
 {

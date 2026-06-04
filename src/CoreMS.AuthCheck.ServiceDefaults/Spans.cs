@@ -1,4 +1,4 @@
-﻿namespace MrJB.AuthCheck.ServiceDefaults;
+﻿namespace CoreMS.AuthCheck.ServiceDefaults;
 
 public static class Spans
 {

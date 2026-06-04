@@ -1,11 +1,11 @@
 <Solution>
   <Folder Name="/aspire/">
-    <Project Path="aspire/MrJB.AuthCheck.AppHost/MrJB.AuthCheck.AppHost.csproj" />
+    <Project Path="aspire/AppHost.AuthCheck/AppHost.AuthCheck.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/MrJB.AuthCheck.Domain/MrJB.AuthCheck.Domain.csproj" Id="f86401b8-4d33-4d77-9a41-17029be8754e" />
-    <Project Path="src/MrJB.AuthCheck.ServiceDefaults/MrJB.AuthCheck.ServiceDefaults.csproj" />
-    <Project Path="src/MrJB.AuthCheck/MrJB.AuthCheck.csproj" />
+    <Project Path="src/CoreMS.AuthCheck.Domain/CoreMS.AuthCheck.Domain.csproj" />
+    <Project Path="src/CoreMS.AuthCheck.ServiceDefaults/CoreMS.AuthCheck.ServiceDefaults.csproj" />
+    <Project Path="src/CoreMS.AuthCheck/CoreMS.AuthCheck.csproj" />
   </Folder>
   <Folder Name="/test/" />
   <Folder Name="/_Solution Items/">

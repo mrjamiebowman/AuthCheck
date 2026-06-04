@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MrJB.AuthCheck\MrJB.AuthCheck.csproj" />
+    <ProjectReference Include="..\..\src\CoreMS.AuthCheck\CoreMS.AuthCheck.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Options;
-using MrJB.AuthCheck.Domain.Configuration;
-using MrJB.AuthCheck.Domain.Interfaces;
+﻿using CoreMS.AuthCheck.Domain.Configuration;
+using CoreMS.AuthCheck.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 
-namespace MrJB.AuthCheck;
+namespace CoreMS.AuthCheck;
 
 public sealed class Worker : BackgroundService
 {

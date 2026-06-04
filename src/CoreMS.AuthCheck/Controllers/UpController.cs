@@ -1,7 +1,7 @@
+using CoreMS.AuthCheck.ServiceDefaults;
 using Microsoft.AspNetCore.Mvc;
-using MrJB.AuthCheck.ServiceDefaults;
 
-namespace MrJB.AuthCheck.Controllers;
+namespace CoreMS.AuthCheck.Controllers;
 
 [ApiController]
 [Route("[controller]")]

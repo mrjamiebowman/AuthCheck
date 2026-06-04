@@ -1,10 +1,10 @@
-﻿using Duende.IdentityModel.Client;
-using MrJB.AuthCheck.Domain.Configuration;
-using MrJB.AuthCheck.Domain.Interfaces;
-using MrJB.AuthCheck.ServiceDefaults;
+﻿using CoreMS.AuthCheck.Domain.Configuration;
+using CoreMS.AuthCheck.Domain.Interfaces;
+using CoreMS.AuthCheck.ServiceDefaults;
+using Duende.IdentityModel.Client;
 using System.Diagnostics;
 
-namespace MrJB.AuthCheck.Services;
+namespace CoreMS.AuthCheck.Services;
 
 public class AuthCheckService : IAuthCheckService
 {
