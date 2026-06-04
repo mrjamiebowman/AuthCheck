@@ -94,10 +94,10 @@ public static class Extensions
 
             //logging.SetResourceBuilder(resourceBuilder);
 
-            if (useOtlpExporter)
-            {
-                logging.AddOtlpExporter();
-            }
+            //if (useOtlpExporter)
+            //{
+            //    logging.AddOtlpExporter();
+            //}
         });
     }
 

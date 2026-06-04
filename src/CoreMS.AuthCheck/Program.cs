@@ -49,7 +49,6 @@ Log.Logger.Information("Starting Auth Check, Environment: {environment}", enviro
 
 // app
 builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
-builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
 
 /******************************************/
 /*                serilog                 */
