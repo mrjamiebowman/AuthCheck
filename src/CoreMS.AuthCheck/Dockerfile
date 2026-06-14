@@ -1,6 +1,10 @@
 # base
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 
+ENV ASPNETCORE_HTTP_PORTS=8080
+ENV ASPNETCORE_HTTPS_PORTS=8081
+ENV ASPNETCORE_URLS "http://+:8080"
+
 USER root
 
 RUN apt-get update \
