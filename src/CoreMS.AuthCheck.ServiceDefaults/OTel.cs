@@ -5,7 +5,7 @@ namespace CoreMS.AuthCheck.ServiceDefaults;
 
 public static class OTel
 {
-    public static string ApplicationName { get; set; } = "MrJB.AuthCheck";
+    public static string ApplicationName { get; set; } = "CoreMS.AuthCheck";
 
     public static string ServiceVersion { get; set; } = "1.0.0";
 
@@ -18,7 +18,7 @@ public static class OTel
 
     public static class Meters
     {
-        public static Meter AppMeter = new Meter("mrjb.authcheck", "1.0.0");
+        public static Meter AppMeter = new Meter("corems.authcheck", "1.0.0");
 
         private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(Auth.Names.DiscoveryDocument, description: "Tracks when a discovery document is checked.");
 
