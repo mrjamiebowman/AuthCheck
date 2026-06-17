@@ -1,5 +1,5 @@
 {
   "appHost": {
-    "path": "aspire/MrJB.AuthCheck.AppHost/MrJB.AuthCheck.AppHost.csproj"
+    "path": "aspire/AppHost.AuthCheck/AppHost.AuthCheck.csproj"
   }
 }
