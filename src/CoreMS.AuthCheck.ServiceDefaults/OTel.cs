@@ -9,6 +9,8 @@ public static class OTel
 
     public static string ServiceVersion { get; set; } = "1.0.0";
 
+    public static string BasePath { get; set; } = "corems.authcheck";
+
     public static readonly ActivitySource ActivitySource = new ActivitySource(ApplicationName);
 
     public static class MetricNames
@@ -28,11 +30,9 @@ public static class OTel
         {
             public static class Names
             {
-                private static string _path = $"authcheck";                
+                public static string DiscoveryDocument = $"{BasePath}.discoverydocument";
 
-                public static string DiscoveryDocument = $"{_path}.discoverydocument";
-
-                public static string Token = $"{_path}.token";
+                public static string Token = $"{BasePath}.token";
             }
 
             public static void AddToken(int d = 1, TagList tagList = default) => Token.Add(d, tagList);
