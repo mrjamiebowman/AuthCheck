@@ -11,14 +11,30 @@ public static class Builder
 
     public static TBuilder ConfigureAzureAppConfiguration<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
+        bool userAppConfig = builder.Configuration.GetValue<bool>("CONFIG_USE_APPCONFIG");
+
+        if (userAppConfig != true)
+        {
+            return builder;
+        }
+        
+        // launch settings can be prefixed with a "CONFIG_PREFIX" environment variable, e.g., "DEV", "STAGING", "PROD"
+        string configPrefix = builder.Configuration.GetValue<string>("CONFIG_PREFIX") ?? string.Empty;
+
+        // ensure it ends with a ":", i.e., "DEV:AZURE_TENANT_ID"
+        if (!String.IsNullOrWhiteSpace(configPrefix) && !configPrefix.EndsWith(":"))
+        {
+            configPrefix += ":";
+        }
+
         // azure app config
-        var connStr = builder.Configuration.GetValue<string>("AZURE_APPCONFIG_CONNECTION_STRING");
-        var labelFilter = builder.Configuration.GetValue<string>("AZURE_APPCONFIG_LABEL_FILTER");
+        var connStr = builder.Configuration.GetValue<string>($"{configPrefix}AZURE_APPCONFIG_CONNECTION_STRING");
+        var labelFilter = builder.Configuration.GetValue<string>($"{configPrefix}AZURE_APPCONFIG_LABEL_FILTER");
 
         // client id & secret
-        var tenantId = builder.Configuration.GetValue<string>("AZURE_TENANT_ID");
-        var clientId = builder.Configuration.GetValue<string>("AZURE_CLIENT_ID");
-        var secret = builder.Configuration.GetValue<string>("AZURE_CLIENT_SECRET");
+        var tenantId = builder.Configuration.GetValue<string>($"{configPrefix}AZURE_TENANT_ID");
+        var clientId = builder.Configuration.GetValue<string>($"{configPrefix}AZURE_CLIENT_ID");
+        var secret = builder.Configuration.GetValue<string>($"{configPrefix}AZURE_CLIENT_SECRET");
 
         // validate configuration settings
         if (String.IsNullOrWhiteSpace(connStr) ||

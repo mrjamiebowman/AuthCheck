@@ -14,5 +14,8 @@ public class AuthCheckConfiguration
     /// </summary>
     public bool OAuth { get; set; } = true;
 
+    /// <summary>
+    ///  Checks to perform for auth check.
+    /// </summary>
     public List<CheckConfiguration> Checks { get; set; } = new();
 }

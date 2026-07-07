@@ -11,20 +11,19 @@ var builder = WebApplication.CreateBuilder(args);
 /*            configuration               */
 /******************************************/
 
-// environment
-var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
-
-// configuration
 builder.Configuration
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile("appsettings.mrjamiebowman.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables()
     .Build();
 
+// azure app config
+builder.ConfigureAzureAppConfiguration();
+
 // startup logs
-Log.Logger.Information("Starting Auth Check, Environment: {environment}", environment);
+Log.Logger.Information("Starting Auth Check, Environment: {environment}", builder.Environment.EnvironmentName);
 
 // app
 builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
