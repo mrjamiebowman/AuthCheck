@@ -36,7 +36,7 @@ public sealed class Worker : BackgroundService
                 _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
 
                 // oauth checks
-                foreach (var item in _authCheck.Checks)
+                foreach (var item in _authCheck.OAuthChecks)
                 {
                     try
                     {

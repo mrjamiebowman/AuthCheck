@@ -23,7 +23,7 @@ public class AuthCheckService : IAuthCheckService
         _httpClient = httpClient;
     }
 
-    public async Task<string> GetAccessTokenAsync(CheckConfiguration oauthCheck, CancellationToken cancellationToken = default)
+    public async Task<string> GetAccessTokenAsync(OAuthCheckConfiguration oauthCheck, CancellationToken cancellationToken = default)
     {
         using var activity = OTel.ActivitySource.StartActivity($"{nameof(AuthCheckService)}.{nameof(GetAccessTokenAsync)}");
 

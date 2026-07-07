@@ -1,8 +1,8 @@
 ﻿namespace CoreMS.AuthCheck.Domain.Configuration;
 
-public class CheckConfiguration
+public class OAuthCheckConfiguration
 {
-    public const string Position = "Checks";
+    public const string Position = "OAuthChecks";
 
     public string? Name { get; set; } = string.Empty;
 

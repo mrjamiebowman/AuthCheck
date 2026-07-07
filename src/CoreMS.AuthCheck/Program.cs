@@ -3,7 +3,6 @@ using CoreMS.AuthCheck.Domain.Configuration;
 using CoreMS.AuthCheck.Domain.Interfaces;
 using CoreMS.AuthCheck.ServiceDefaults;
 using CoreMS.AuthCheck.Services;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,13 +16,11 @@ builder.Configuration
     .AddJsonFile("appsettings.mrjamiebowman.json", optional: true, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables()
+    .AddUserSecrets<Program>(optional: true)
     .Build();
 
 // azure app config
 builder.ConfigureAzureAppConfiguration();
-
-// startup logs
-Log.Logger.Information("Starting Auth Check, Environment: {environment}", builder.Environment.EnvironmentName);
 
 // app
 builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
