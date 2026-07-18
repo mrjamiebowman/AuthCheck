@@ -58,6 +58,7 @@ public sealed class Worker : BackgroundService
                     // Normal shutdown
                 } catch (Exception ex) {
                     // suppress
+                    _logger.LogError(ex, "AuthCheck Error");
                 }
             }
 
