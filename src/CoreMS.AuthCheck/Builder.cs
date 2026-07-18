@@ -15,6 +15,7 @@ public static class Builder
 
         if (userAppConfig != true)
         {
+            Console.WriteLine("Azure App Configuration DISABLED.");
             return builder;
         }
         
