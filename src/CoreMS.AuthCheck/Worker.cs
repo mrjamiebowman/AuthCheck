@@ -25,7 +25,13 @@ public sealed class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         // delay
-        var delay = _authCheck.DelayInMinutes ?? 20;
+        int delay = _authCheck.DelayInMinutes ?? 20;
+
+        // must be 1 minute or more...
+        if (delay <= 1)
+        {
+            delay = 1;
+        }
 
         _logger.LogInformation("AuthCheck Worker started with a delay of {delayInMinutes} in minutes.", delay);
 
