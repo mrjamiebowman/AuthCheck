@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -58,33 +57,6 @@ public static class Extensions
             .CreateDefault()
             .AddService(serviceName: serviceName);
 
-        ConfigureLogging(builder, resourceBuilder, useOtlpExporter);
-
-        var openTelemetryBuilder = builder.Services
-            .AddOpenTelemetry()
-            .ConfigureResource(resource =>
-            {
-                resource.AddService(serviceName: serviceName);
-            });
-
-        ConfigureMetrics(openTelemetryBuilder, useOtlpExporter);
-        ConfigureTracing(openTelemetryBuilder, serviceName, useOtlpExporter);
-
-        if (useAzureMonitor)
-        {
-            string appConfigConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
-            openTelemetryBuilder.UseAzureMonitor(x => x.ConnectionString = appConfigConnectionString);
-        }
-
-        return builder;
-    }
-
-    private static void ConfigureLogging<TBuilder>(
-        TBuilder builder,
-        ResourceBuilder resourceBuilder,
-        bool useOtlpExporter)
-        where TBuilder : IHostApplicationBuilder
-    {
         builder.Logging.AddOpenTelemetry(logging =>
         {
             logging.IncludeFormattedMessage = true;
@@ -98,32 +70,14 @@ public static class Extensions
             //    logging.AddOtlpExporter();
             //}
         });
-    }
 
-    private static void ConfigureMetrics(
-        OpenTelemetryBuilder openTelemetryBuilder,
-        bool useOtlpExporter)
-    {
-        openTelemetryBuilder.WithMetrics(metrics =>
-        {
-            metrics
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddRuntimeInstrumentation()
-                .AddMeter(OTel.Meters.AppMeter.Name);
-
-            if (useOtlpExporter)
+        var openTelemetryBuilder = builder.Services
+            .AddOpenTelemetry()
+            .ConfigureResource(resource =>
             {
-                metrics.AddOtlpExporter();
-            }
-        });
-    }
+                resource.AddService(serviceName: serviceName);
+            });
 
-    private static void ConfigureTracing(
-        OpenTelemetryBuilder openTelemetryBuilder,
-        string serviceName,
-        bool useOtlpExporter)
-    {
         openTelemetryBuilder.WithTracing(tracing =>
         {
             tracing
@@ -149,8 +103,29 @@ public static class Extensions
                 tracing.AddOtlpExporter();
             }
         });
-    }
 
+        openTelemetryBuilder.WithMetrics(metrics =>
+        {
+            metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddMeter(OTel.Meters.AppMeter.Name);
+
+            if (useOtlpExporter)
+            {
+                metrics.AddOtlpExporter();
+            }
+        });
+
+        if (useAzureMonitor)
+        {
+            string appConfigConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+            openTelemetryBuilder.UseAzureMonitor(x => x.ConnectionString = appConfigConnectionString);
+        }
+
+        return builder;
+    }
 
     public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
