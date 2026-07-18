@@ -74,7 +74,8 @@ public static class Extensions
 
         if (useAzureMonitor)
         {
-            openTelemetryBuilder.UseAzureMonitor();
+            string appConfigConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+            openTelemetryBuilder.UseAzureMonitor(x => x.ConnectionString = appConfigConnectionString);
         }
 
         return builder;
