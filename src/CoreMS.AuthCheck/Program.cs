@@ -22,16 +22,18 @@ builder.Configuration
 // azure app config
 builder.ConfigureAzureAppConfiguration();
 
-// app
+/******************************************/
+/*                   app                  */
+/******************************************/
+
 builder.Services.Configure<AuthCheckConfiguration>(builder.Configuration.GetSection(AuthCheckConfiguration.Position));
 
 builder.AddServiceDefaults();
 
 builder.Services.AddControllers();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// services
 builder.Services.AddHttpClient<IAuthCheckService, AuthCheckService>();
 
 // worker
@@ -39,13 +41,14 @@ builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
 
+/******************************************/
+/*                   run                  */
+/******************************************/
+
 app.MapDefaultEndpoints();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// openapi
+app.MapOpenApi();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

@@ -27,7 +27,8 @@ public class AuthCheckService : IAuthCheckService
     {
         using var activity = OTel.ActivitySource.StartActivity($"{nameof(AuthCheckService)}.{nameof(GetAccessTokenAsync)}");
 
-        _logger.LogInformation("Auth Check: (Name: {name}), (Server: {server}), for (Client ID: {clientId})", oauthCheck.Name, oauthCheck.Server, oauthCheck.ClientId);
+        // authchekc
+        _logger.LogInformation("AuthCheck: (Name: {name}), (Server: {server}), for (Client ID: {clientId})", oauthCheck.Name, oauthCheck.Server, oauthCheck.ClientId);
 
         // tag list(s)
         var tagListDiscoDoc = new TagList();
@@ -87,6 +88,8 @@ public class AuthCheckService : IAuthCheckService
             // success
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Success);
             OTel.Meters.Auth.AddToken(1, tagListDiscoDoc);
+
+            _logger.LogInformation("AuthCheck: (Name: {name}), (Server: {server}), SUCCESS!", oauthCheck.Name, oauthCheck.Server);
         }
 
         // passed
