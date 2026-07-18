@@ -24,11 +24,9 @@ public static class Extensions
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.ConfigureOpenTelemetry();
-
         builder.AddDefaultHealthChecks();
 
         builder.Services.AddServiceDiscovery();
-
         builder.Services.ConfigureHttpClientDefaults(http =>
         {
             // Turn on resilience by default
@@ -54,7 +52,7 @@ public static class Extensions
         // vars
         var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
         bool useAzureMonitor = !string.IsNullOrWhiteSpace(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
-        string serviceName = OTel.ActivitySource.Name;
+        string serviceName = OTel.ApplicationName;
 
         var resourceBuilder = ResourceBuilder
             .CreateDefault()

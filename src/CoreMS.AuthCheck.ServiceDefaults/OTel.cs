@@ -20,7 +20,7 @@ public static class OTel
 
     public static class Meters
     {
-        public static Meter AppMeter = new Meter("corems.authcheck", "1.0.0");
+        public static Meter AppMeter = new Meter(ApplicationName, "1.0.0");
 
         private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(Auth.Names.DiscoveryDocument, description: "Tracks when a discovery document is checked.");
 
