@@ -37,40 +37,32 @@ public sealed class Worker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            try
-            {
-                _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
+            _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
 
-                // check for authchecks
-                if (!_authCheck.OAuthChecks.Any())
-                {
-                    _logger.LogWarning("There aren't any OAuthChecks.");
-                    continue;
-                }
+            // check for authchecks
+            if (!_authCheck.OAuthChecks.Any())
+            {
+                _logger.LogWarning("There aren't any OAuthChecks.");
+                goto delay;
+            }
 
-                // oauth checks
-                foreach (var item in _authCheck.OAuthChecks)
+            // oauth checks
+            foreach (var item in _authCheck.OAuthChecks)
+            {
+                try
                 {
-                    try
-                    {
-                        // get token
-                        var token = await _authCheckService.GetAccessTokenAsync(item, stoppingToken);
-                    } catch (Exception ex)
-                    {
-                        // suppress
-                    }
+                    // get token
+                    var token = await _authCheckService.GetAccessTokenAsync(item, stoppingToken);
+                } catch (OperationCanceledException)
+                {
+                    // Normal shutdown
+                } catch (Exception ex) {
+                    // suppress
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                // Normal shutdown
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in Worker.");
             }
 
             // delay
+            delay:
             _logger.LogInformation("Delay {delayInMinutes} mins.", delay);
 
             await Task.Delay(TimeSpan.FromMinutes(delay), stoppingToken);
