@@ -35,6 +35,13 @@ public sealed class Worker : BackgroundService
             {
                 _logger.LogInformation("Worker running at {Time}", DateTimeOffset.Now);
 
+                // check for authchecks
+                if (!_authCheck.OAuthChecks.Any())
+                {
+                    _logger.LogWarning("There aren't any OAuthChecks.");
+                    continue;
+                }
+
                 // oauth checks
                 foreach (var item in _authCheck.OAuthChecks)
                 {
