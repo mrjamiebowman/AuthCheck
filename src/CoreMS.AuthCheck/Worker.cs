@@ -1,6 +1,8 @@
 ﻿using CoreMS.AuthCheck.Domain.Configuration;
 using CoreMS.AuthCheck.Domain.Interfaces;
+using CoreMS.AuthCheck.ServiceDefaults;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace CoreMS.AuthCheck;
 
@@ -24,6 +26,13 @@ public sealed class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // initialize metrics
+        var tagList = new TagList();
+
+        // otel
+        OTel.Meters.AddToken(0, tagList);
+        OTel.Meters.AddDiscoveryDocument(0, tagList);
+
         // delay
         int delay = _authCheck.DelayInMinutes ?? 20;
 

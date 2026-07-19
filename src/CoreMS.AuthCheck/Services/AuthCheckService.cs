@@ -27,7 +27,7 @@ public class AuthCheckService : IAuthCheckService
     {
         using var activity = OTel.ActivitySource.StartActivity($"{nameof(AuthCheckService)}.{nameof(GetAccessTokenAsync)}");
 
-        // authchekc
+        // authcheck
         _logger.LogInformation("AuthCheck: (Name: {name}), (Server: {server}), for (Client ID: {clientId})", oauthCheck.Name, oauthCheck.Server, oauthCheck.ClientId);
 
         // tag list(s)
@@ -53,7 +53,7 @@ public class AuthCheckService : IAuthCheckService
             _logger.LogError("Discovery failed: {Error}", disco.Error);
 
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Failure);
-            OTel.Meters.Auth.AddDiscoveryDocument(1, tagListDiscoDoc);
+            OTel.Meters.AddDiscoveryDocument(1, tagListDiscoDoc);
 
             activity?.SetStatus(ActivityStatusCode.Error, $"Discovery failed: {disco.Error}");
             throw new InvalidOperationException($"Discovery failed: {disco.Error}");
@@ -61,7 +61,7 @@ public class AuthCheckService : IAuthCheckService
         {
             // succeeded
             tagListDiscoDoc.Add(Spans.Result, Spans.Values.Success);
-            OTel.Meters.Auth.AddDiscoveryDocument(1, tagListDiscoDoc);
+            OTel.Meters.AddDiscoveryDocument(1, tagListDiscoDoc);
         }
 
         // token request
@@ -78,16 +78,18 @@ public class AuthCheckService : IAuthCheckService
             // failure
             _logger.LogError("Token request failed: {Error}", tokenResponse.Error);
 
-            tagListDiscoDoc.Add(Spans.Result, Spans.Values.Failure);
-            OTel.Meters.Auth.AddToken(1, tagListDiscoDoc);
+            var tagList = new TagList();
+            tagList.Add(Spans.Result, Spans.Values.Failure);
+            OTel.Meters.AddToken(1, tagList);
 
             activity?.SetStatus(ActivityStatusCode.Error, $"Token request failed: {tokenResponse.Error}");
             throw new InvalidOperationException($"Token request failed: {tokenResponse.Error}");
         } else
         {
             // success
-            tagListDiscoDoc.Add(Spans.Result, Spans.Values.Success);
-            OTel.Meters.Auth.AddToken(1, tagListDiscoDoc);
+            var tagList = new TagList();
+            tagList.Add(Spans.Result, Spans.Values.Success);
+            OTel.Meters.AddToken(1, tagList);
 
             _logger.LogInformation("AuthCheck: (Name: {name}), (Server: {server}), SUCCESS!", oauthCheck.Name, oauthCheck.Server);
         }

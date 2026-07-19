@@ -63,12 +63,12 @@ public static class Extensions
             logging.IncludeScopes = true;
             logging.ParseStateValues = true;
 
-            //logging.SetResourceBuilder(resourceBuilder);
+            logging.SetResourceBuilder(resourceBuilder);
 
-            //if (useOtlpExporter)
-            //{
-            //    logging.AddOtlpExporter();
-            //}
+            if (useOtlpExporter)
+            {
+                logging.AddOtlpExporter();
+            }
         });
 
         var openTelemetryBuilder = builder.Services

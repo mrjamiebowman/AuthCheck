@@ -13,20 +13,15 @@ public static class OTel
 
     public static readonly ActivitySource ActivitySource = new ActivitySource(ApplicationName);
 
-    public static class MetricNames
-    {
-
-    }
-
     public static class Meters
     {
         public static Meter AppMeter = new Meter(ApplicationName, "1.0.0");
 
-        private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(Auth.Names.DiscoveryDocument, description: "Tracks when a discovery document is checked.");
+        private static Counter<int> DiscoveryDocument = AppMeter.CreateCounter<int>(MetricNames.Names.DiscoveryDocument, description: "Tracks when a discovery document is checked.");
 
-        private static Counter<int> Token = AppMeter.CreateCounter<int>(Auth.Names.Token, description: "Tracks when a JWT token is requested.");
+        private static Counter<int> Token = AppMeter.CreateCounter<int>(MetricNames.Names.Token, description: "Tracks when a JWT token is requested.");
 
-        public static class Auth
+        public static class MetricNames
         {
             public static class Names
             {
@@ -34,10 +29,10 @@ public static class OTel
 
                 public static string Token = $"{BasePath}.token";
             }
-
-            public static void AddToken(int d = 1, TagList tagList = default) => Token.Add(d, tagList);
-
-            public static void AddDiscoveryDocument(int d = 1, TagList tagList = default) => DiscoveryDocument.Add(d, tagList);
         }
+
+        public static void AddToken(int d = 1, TagList tagList = default) => Token.Add(d, tagList);
+
+        public static void AddDiscoveryDocument(int d = 1, TagList tagList = default) => DiscoveryDocument.Add(d, tagList);
     }
 }
